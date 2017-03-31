@@ -3,35 +3,35 @@
 Roman Levitas
 March 2017
 
-## Transferred Learning Natural Language Processing Report
+## Transferred Learning: Is Physics the Common Thread?
 
 ### Definition
 
 # Overview
 
-The aim of this investigation will be to build a text classifier, but the twist is that the classifier will be trained on topics independent of the testing set, making this a classic Natural Language Processing (NLP) problem with a transferred learning approach.
+The aim of this investigation will be to build a text classifier. The twist is that the classifier will be trained on topics independent of the testing set in theme, making this a classic Natural Language Processing (NLP) problem with a transferred learning caveat.
 
-The data to be analyzed is a subset of the Stack Exchange Data Dump [1] published on December 15, 2016 focusing on 6 topics in particular: biology, cooking, cryptography, diy, robotics, and travel.
+The input data to be analyzed is a subset of the Stack Exchange Data Dump [1] published on December 15, 2016 focusing on 6 topics in particular: biology, cooking, cryptography, diy, robotics, and travel.
 The testing set is a 7th topic--physics.
-In effect, the classifier to be designed will have knowledge of 6 seemingly independent topics through which we can investigate the idea of there being a common thread or unifying theme if looked at from the perspective of physics.
+In effect, the classifier to be designed will have knowledge of 6 seemingly independent topics through which we can investigate the idea of there being a common thread or unifying theme, which is physics.
 
 The history of Stack Exchange's question-and-answer format dates back to as recent as 2008 when StackOverflow was created, the originating leg of the Stack Exchange network, which allows users to crowdsource knowledge on the topic of computer science/software engineering.
 
-The data dump contains the titles, text, (the input set) and tags (which is what we will be predicting via the classifier) of Stack Exchange questions in the form of a comma separated value (CSV) document.
+The data dump contains the titles, text and tags of Stack Exchange questions in the form of a comma separated value (CSV) document where each row is a separate question. The Titles and text of the question will be considered as the input set and the tags, or classification, is what will be predicted via the classifier.
 
 [1] https://archive.org/details/stackexchange
 
 ### Problem Statement
-The problem at hand is defined by the Kaggle team's competition title: 'Transfer Learning on Stack Exchange Tags' [3] which aims to "Predict tags from models trained on unrelated topics". Specifically, predicting tags for physics questions after training the classifier on questions provided in the 6 different fields mentioned above.
+The problem at hand is defined by the Kaggle team's competition title: 'Transfer Learning on Stack Exchange Tags' [3] which aims to "Predict tags from models trained on unrelated topics". Specifically, predicting tags for physics questions after training the text classifier on questions provided in the 6 different fields mentioned above.
 
-Underlying in this approach is the presumption that physics is the unifying thread, so the investigation is itself an exercise into a problem without a definite answer but if there is a correlation that can be found, it can certainly shed light and illuminate the grey area in question: Is Physics at the heart of eveything?
+Underlying in this approach is the assumption that there is a unifying thread, so the investigation is itself an exercise into a problem without a definite answer. However, if there is a correlation that can be found, it can shed light onto the longstanding question: Is Physics at the heart of everything?
 
-Predictions can be compared against the physics questions' actual tags and thus the model can be ranked on the correctness of its categorization using metrics discussed further.
+Predictions can be compared against the physics questions' actual, assigned tags in the test set and thus the classification model can be ranked on the correctness of its categorization using metrics discussed further.
 
 [3] https://www.kaggle.com/c/transfer-learning-on-stack-exchange-tags
 
 ### Evaluation Metrics
-The evaluation metric for this competition is Mean F1-Score [5]. The F1 score measures accuracy using the statistical notions of precision (p) and recall (r). Precision is the ratio of true positives (tp) to all predicted positives (tp + fp). Recall is the ratio of true positives to all actual positives (tp + fn).
+The evaluation metric for this competition is Mean F1-Score [5]. The F1 score measures accuracy using the statistical notions of precision (p) and recall (r). Precision is the ratio of true positives (tp) to all predicted positives (tp + fp). Recall is the ratio of true positives to all actual positives (tp + fn) where positives are correctly classified tags.
 
 The F1 score is given by:
   F1 = 2pr/p+r
@@ -51,15 +51,41 @@ Example:
 ### Analysis
 
 # Data Exploration
-The input dataset is 6 separate CSV files for biology, cooking, cryptography, diy, robotics, and travel [4]. Each row of the data contains the title, text, and associated tags of a question. The export of the data from StackExchange supported html markdown for the text column so there will be a prerequisite data cleansing step to take into account markdown formatting and html tags/elements.
+The input dataset is 6 separate CSV files of questions and their tags as strings in these fields: biology, cooking, cryptography, diy, robotics, and travel [4]. Each row of the CSV contains the title, text, and associated tags of a question. The export of the data from StackExchange supported html markdown for the text column so there will be a data cleaning step to take into account markdown formatting and html tags/element removal.
 
-`biology.head(5)`
+The columns in the csv are defined as follows:
+`'id', 'title', 'content', 'tags'`
 
-The training set contains ~25,000 entries for diy, ~8,600 for biology, ~10,400 for cryptography, ~2,700 for robotics, ~12,000 for travel, ~15,000 for cooking.
+`id` field will be ignored as the python library used for importing the files will take care of indexing itself.
 
-The testing data has ~82,000 entries on physics.
 
-The tags (labels) are generated by the user community so it worthwhile investigating their spread independently.
+3 rows from the robotics data set are printed below in their raw form:
+
+id                                                         1
+title      What is the right approach to write the spin c...
+content    <p>Imagine programming a 3 wheel soccer robot....
+tags                                          soccer control
+
+id                                                         2
+title      How can I modify a low cost hobby servo to run...
+content    <p>I've got some hobby servos (<a href="http:/...
+tags                                         control rcservo
+
+id                                                         3
+title      What useful gaits exist for a six legged robot...
+content    <p><a href="http://www.oricomtech.com/projects...
+tags                                               gait walk
+
+The number of questions/rows for each of the 6 sets varies as so:
+
+biology: 13,196
+cooking: 15,404
+travel: 19,279
+robotics: 2,771
+crypto: 10,432
+diy: 25,918
+
+The testing data in the 7th set has 81,926 entries on physics.
 
 [4] https://www.kaggle.com/c/transfer-learning-on-stack-exchange-tags/data
 
@@ -67,7 +93,7 @@ The tags (labels) are generated by the user community so it worthwhile investiga
 One measure of how important a word may be in a text collection is its term frequency (tf), how frequently a word occurs in a document. There are words in a document, however, that occur many times but may not be significant; in English, these are words like “the”, “is”, “of”, and so forth
 
 Another approach is to look at a term’s inverse document frequency (idf), which decreases the weight for commonly used words and increases the weight for words that are not used very much in a collection of documents. This can be combined with term frequency to calculate a term’s tf-idf,
-which is a way to score the importance of words in a document based on how frequently they appear across multiple documents.
+which is a way to score the importance of words in a document based on how frequently they appear across multiple documents, or in this case, questions.
 
 `Histograms for tf-idf`
 `wordcloud`
