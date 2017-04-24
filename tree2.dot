@@ -1,0 +1,36 @@
+digraph Tree {
+node [shape=box] ;
+0 [label="X[3110] <= 0.0583\ngini = 0.0065\nsamples = 2771\nvalue = [2762, 9]\nclass = 3d-model"] ;
+1 [label="X[4734] <= 0.1193\ngini = 0.005\nsamples = 2769\nvalue = [2762, 7]\nclass = 3d-model"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="X[43] <= 0.3386\ngini = 0.0043\nsamples = 2768\nvalue = [2762, 6]\nclass = 3d-model"] ;
+1 -> 2 ;
+3 [label="X[2836] <= 0.2362\ngini = 0.0036\nsamples = 2767\nvalue = [2762, 5]\nclass = 3d-model"] ;
+2 -> 3 ;
+4 [label="X[646] <= 0.4411\ngini = 0.0029\nsamples = 2766\nvalue = [2762, 4]\nclass = 3d-model"] ;
+3 -> 4 ;
+5 [label="X[4301] <= 0.0918\ngini = 0.0022\nsamples = 2765\nvalue = [2762, 3]\nclass = 3d-model"] ;
+4 -> 5 ;
+6 [label="X[3703] <= 0.0495\ngini = 0.0014\nsamples = 2764\nvalue = [2762, 2]\nclass = 3d-model"] ;
+5 -> 6 ;
+7 [label="X[1800] <= 0.1219\ngini = 0.0007\nsamples = 2763\nvalue = [2762, 1]\nclass = 3d-model"] ;
+6 -> 7 ;
+8 [label="gini = 0.0\nsamples = 2762\nvalue = [2762, 0]\nclass = 3d-model"] ;
+7 -> 8 ;
+9 [label="gini = 0.0\nsamples = 1\nvalue = [0, 1]\nclass = 3d-printing"] ;
+7 -> 9 ;
+10 [label="gini = 0.0\nsamples = 1\nvalue = [0, 1]\nclass = 3d-printing"] ;
+6 -> 10 ;
+11 [label="gini = 0.0\nsamples = 1\nvalue = [0, 1]\nclass = 3d-printing"] ;
+5 -> 11 ;
+12 [label="gini = 0.0\nsamples = 1\nvalue = [0, 1]\nclass = 3d-printing"] ;
+4 -> 12 ;
+13 [label="gini = 0.0\nsamples = 1\nvalue = [0, 1]\nclass = 3d-printing"] ;
+3 -> 13 ;
+14 [label="gini = 0.0\nsamples = 1\nvalue = [0, 1]\nclass = 3d-printing"] ;
+2 -> 14 ;
+15 [label="gini = 0.0\nsamples = 1\nvalue = [0, 1]\nclass = 3d-printing"] ;
+1 -> 15 ;
+16 [label="gini = 0.0\nsamples = 2\nvalue = [0, 2]\nclass = 3d-printing"] ;
+0 -> 16 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+}

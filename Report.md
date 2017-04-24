@@ -90,7 +90,7 @@ Furthermore, the output values, or tags, are visualized below in a word-cloud wh
 # Algorithms and Techniques
 To solve the problem a Decision Tree classifier will be trained and used to see if it can give reasonable assignment of tags on the testing set.
 
-As tfidf was used in the previous section to extract the dominating and significant features of our input data and visualize it via histograms, it will also be utilized by the decision tree classifier as well. This is done with Sci-kit learn python library, using `TfidfVectorizer()` to transform the input data into useful numerical values that are easier for a classifier to consume.   
+As tfidf was used in the previous section to extract the dominating and significant features of our input data and visualize it via histograms, it will also be utilized by the decision tree classifier as well. This is done with Sci-kit learn python library by transforming the input data into useful numerical values that are easier for a classifier to consume.   
 
 Cross validation grid search (`GridSearchCV()`) allows a wide range of tunable parameters to be optimized by trying different combinations of values.
 For the TfidfVectorizer, the minimum & maximum data frequency (df) parameters can be used to create a range of acceptable term frequencies and cut off trivial terms (those that appear too infrequently and cannot be used to generalize patterns or vice versa--terms that appear too frequently, across all rows, and thus add no value).
@@ -118,7 +118,6 @@ Once these questions have been asked and answers associated, the tree is built a
 DecisionTrees are vulnerable to overfitting and thus the max_depth parameter is used to set the maximum depth of the classifier before it is pruned. If no parameter is given, the tree will continue to grow until all the leaf nodes are pure.
 
 
-
 In order to gauge the general metrics of the classifier, the training sets are individually cross validated using train/test splits.
 
 
@@ -137,11 +136,37 @@ To be able to predict tags with an F1 score above 0.2 would be satisfactory, abo
 First, the data set is preprocessed by stripping the question text of it's markdown properties and removal of wrapping HTML tags and code snippets.
 Then, by utilizing classic NLP approaches such as removing stopwords, converting case to a convention (lower), removing punctuation/non-alphabet characters, and reducing permutations of the same word by using its linguistic stem, the data is transformed to allow for more meaningful results. For implementation, see `clean_data( raw_data )` function.
 
-Tags are analyzed as strings, separated by spaces (preserving hyphenated words), and are set to an array of strings (see `separate_tags()`)
+Tags are analyzed as strings, separated by spaces (preserving hyphenated words), and are set to an array of strings. They are further encoded into bit-arrays where the length of the array is the number of unique combination of tags, and a 1 in a specified place represents its presence in a question.
 
 
 # Implementation
+To get set up, two Python libraries are used predominantly throughout the investigation: `numpy` for its linear algebra functionality and `pandas` for CSV file I/O, in-memory DataFrame matrix representation, and data processing.
 
+CSV's are imported into pandas DataFrames:
+  `biology = pd.read_csv("data/biology.csv")
+   travel = ...`
+and are combined and stored in a dictionary:
+
+`  df_hash = {
+      "biology": biology,
+      "travel": travel,
+      "diy": diy,
+      "cooking": cooking,
+      "crypto": crypto,
+      "robotics": robotics
+  }`
+
+The implementation of the data preprocessing is aggregated into the `clean_data()` method which takes raw_data from the Dataframes as a parameter.
+The method relies on two more linguistic Python libraries used commonly to accomplish the goals laid out in ##Data Preprocessing section: `bs4` (BeautifulSoup4) used for parsing out code snippets and html elements and `nltk` (Natural Language Toolkit) for lemmatizing/stemming words and only retaining words with meaning.
+
+The remainder of investigation focuses on machine learning steps and utilizes the scikit-learn (aka SKlearn) Python library extensively.
+For ease of use and chaining data transformations, a pipeline is created to funnel preprocessed data through a `TfidfVectorizer()` for both the questions' titles and text (using the `Selector` class as a custom transformer), and their resultant values combined using a `FeatureUnion`.
+
+These Tfidf values are used to construct decision trees using the `DecisionTreeClassifier` wrapped in a `OneVsRestClassifier` for each tag.
+
+This constructed pipeline is then fit through `GridSearchCV` (cross validation) where a variety of parameters can be applied for each transform and the best combination is reported.
+
+A `MultiLabelBinarizer` is used to accomplish encoding of tags
 
 
 ### Project Design
