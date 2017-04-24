@@ -108,7 +108,7 @@ A decision tree is rooted in making choices that maximize the likelyhood of pred
 The following parameters are iterated over for the classifier using GridSearchCV():
 
 DT__criterion : ["gini", "entropy"]
-DT__max_depth : [10, 20, 50, 100, 200, 500]
+DT__max_depth : [10, 25, 50, 100, 200, 500]
 
 The criterion according to which the quality of a split is calculated when subsetting nodes of the tree into its children nodes varies between either "gini" impurity or the traditional "entropy" definition of information gain.
 
@@ -167,6 +167,21 @@ These Tfidf values are used to construct decision trees using the `DecisionTreeC
 This constructed pipeline is then fit through `GridSearchCV` (cross validation) where a variety of parameters can be applied for each transform and the best combination is reported.
 
 A `MultiLabelBinarizer` is used to accomplish encoding of tags
+
+## Refinement
+
+Based on the results of GridSearchCV, the optimal parameters for the pipeline classifier are:
+
+  DT__estimator__criterion: 'gini'
+	DT__estimator__max_depth: 25
+	union__content__tfidf__max_df: 0.9
+	union__content__tfidf__min_df: 0.001
+	union__title__tfidf__max_df: 0.9
+	union__title__tfidf__min_df: 0.001
+	union__transformer_weights: {'content': 0.4, 'title': 0.6}
+
+
+These are set and used to make predictions.
 
 
 ### Project Design
